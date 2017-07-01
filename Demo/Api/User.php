@@ -1,11 +1,13 @@
 <?php
+
 /**
  * 用户信息类
  */
+class Api_User extends PhalApi_Api
+{
 
-class Api_User extends PhalApi_Api {
-
-    public function getRules() {
+    public function getRules()
+    {
         return array(
             'getBaseInfo' => array(
                 'userId' => array('name' => 'user_id', 'type' => 'int', 'min' => 1, 'require' => true, 'desc' => '用户ID'),
@@ -26,12 +28,15 @@ class Api_User extends PhalApi_Api {
      * @return string info.note 用户来源
      * @return string msg 提示信息
      */
-    public function getBaseInfo() {
+    public function getBaseInfo()
+    {
+        DI()->tracer->mark('开始读取数据库');
         $rs = array('code' => 0, 'msg' => '', 'info' => array());
 
         $domain = new Domain_User();
         $info = $domain->getBaseInfo($this->userId);
-
+        DI()->tracer->mark('结束读取数据库');
+        DI()->response->setDebug('info',$info);
         if (empty($info)) {
             DI()->logger->debug('user not found', $this->userId);
 
@@ -57,7 +62,8 @@ class Api_User extends PhalApi_Api {
      * @exception 400 参数传递错误
      * @exception 500 服务器内部错误
      */
-    public function getMultiBaseInfo() {
+    public function getMultiBaseInfo()
+    {
         $rs = array('code' => 0, 'msg' => '', 'list' => array());
 
         $domain = new Domain_User();

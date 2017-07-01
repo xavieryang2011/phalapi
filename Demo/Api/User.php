@@ -30,16 +30,12 @@ class Api_User extends PhalApi_Api
      */
     public function getBaseInfo()
     {
-        DI()->tracer->mark('开始读取数据库');
         $rs = array('code' => 0, 'msg' => '', 'info' => array());
 
         $domain = new Domain_User();
         $info = $domain->getBaseInfo($this->userId);
-        DI()->tracer->mark('结束读取数据库');
-        DI()->response->setDebug('info',$info);
         if (empty($info)) {
             DI()->logger->debug('user not found', $this->userId);
-
             $rs['code'] = 1;
             $rs['msg'] = T('user not exists');
             return $rs;
